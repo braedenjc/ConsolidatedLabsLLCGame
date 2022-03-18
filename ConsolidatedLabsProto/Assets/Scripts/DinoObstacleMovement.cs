@@ -5,7 +5,7 @@ using UnityEngine;
     using UnityEditor;
 #endif
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class DinoObstacleMovement : MonoBehaviour
 {
     [SerializeField]
@@ -17,25 +17,61 @@ public class DinoObstacleMovement : MonoBehaviour
     [Space(10)]
     [Header("Movement")]
     public float speed = 0f;
+    [SerializeField]
+    private bool iAmMovingLeft = true;
+    private float xStart;
 
-    void FixedUpdate(){
-        
-        
+    void Start(){
+        xStart = this.transform.position.x; //record this dino's starting position for later comparisons.
     }
+
+    void Update(){
+        MoveDino();
+    }
+
+    void MoveDino(){
+        int moveLeftModifier;
+
+        //set a modifier based on which direction we need to go.
+        if(iAmMovingLeft){
+            moveLeftModifier = -1;
+        }
+        else{
+            moveLeftModifier = 1;
+        }
+       
+        Vector3 forwardMotion = new Vector3(
+            transform.position.x + (speed * Time.deltaTime * moveLeftModifier),
+            transform.position.y,
+            transform.position.z 
+        );
+        
+        rb.MovePosition(forwardMotion);
+        
+        //check to see if we are going to start moving a different direction on the next frame.
+        if(transform.position.x <= xStart - xLeftLimit){
+            iAmMovingLeft = false;
+        }
+        else if (transform.position.x >= xStart + xRightLimit){
+            iAmMovingLeft = true;
+        }
+    }
+
     
+    #region Editor only functions
     #if UNITY_EDITOR
         void DrawLeftEndpointPath(){
             DrawPathLine(this.transform.position, xLeftLimit, Color.red);
         }
 
         void DrawRightEndpointPath(){
-            DrawPathLine(this.transform.position, -xRightLimit, Color.magenta);
+            DrawPathLine(this.transform.position, xRightLimit, Color.magenta);
         }
 
         void DrawPathLine(Vector3 from, float distanceFromCenter, Color color){
             Vector3 endpoint = new Vector3
             (
-                this.transform.position.x  + distanceFromCenter, 
+                xStart  + distanceFromCenter, 
                 this.transform.position.y, 
                 this.transform.position.z
             );
@@ -49,5 +85,6 @@ public class DinoObstacleMovement : MonoBehaviour
             DrawRightEndpointPath();
         }       
     #endif
+    #endregion
 
 }
