@@ -8,6 +8,12 @@ using UnityEngine;
 [ExecuteAlways]
 public class DinoObstacleMovement : MonoBehaviour
 {
+    public enum MovementModes{
+        HORIZONTAL,
+        TOWARDPLAYER,
+        CHASEPLAYER,
+    }
+
     [SerializeField]
     private Rigidbody rb;
     [Header("Endpoints")]
@@ -17,6 +23,7 @@ public class DinoObstacleMovement : MonoBehaviour
     [Space(10)]
     [Header("Movement")]
     public float speed = 0f;
+    public MovementModes currentMovement;
     [SerializeField]
     private bool iAmMovingLeft = true;
     private float xStart;
@@ -26,10 +33,26 @@ public class DinoObstacleMovement : MonoBehaviour
     }
 
     void Update(){
-        MoveDino();
+        if(currentMovement == MovementModes.HORIZONTAL){
+            MoveDinoHorizontal();
+        }
+        else if (currentMovement == MovementModes.TOWARDPLAYER){
+            MoveDinoTowardPlayer();
+        }
     }
 
-    void MoveDino(){
+    void MoveDinoTowardPlayer(){
+        Quaternion dinoRotationTowardPlayer = Quaternion.Euler(0, -180,0);
+        this.transform.rotation = dinoRotationTowardPlayer;
+        Vector3 forwardMotion = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z - (speed * Time.deltaTime)
+        );
+        rb.MovePosition(forwardMotion);
+    }
+    
+    void MoveDinoHorizontal(){
         int moveLeftModifier;
 
         //set a modifier based on which direction we need to go.
