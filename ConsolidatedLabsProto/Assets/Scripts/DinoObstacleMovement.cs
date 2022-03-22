@@ -12,6 +12,8 @@ public class DinoObstacleMovement : MonoBehaviour
         HORIZONTAL,
         TOWARDPLAYER,
         CHASEPLAYER,
+        PAUSED,
+        DISCO
     }
 
     [SerializeField]
@@ -42,6 +44,16 @@ public class DinoObstacleMovement : MonoBehaviour
         else if (currentMovement == MovementModes.CHASEPLAYER){
             ChasePlayer();
         }
+        else if (currentMovement == MovementModes.DISCO){
+            DinoDisco();
+        }
+    }
+
+    void DinoDisco(){
+        float yEulerAngle = (1 - (transform.rotation.y) * (Time.deltaTime * speed));
+        Vector3 angle = new Vector3(transform.eulerAngles.x, yEulerAngle, transform.eulerAngles.z);
+        transform.eulerAngles += angle;
+        
     }
 
     void MoveDinoTowardPlayer(){
