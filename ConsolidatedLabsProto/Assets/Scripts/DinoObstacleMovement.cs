@@ -39,6 +39,9 @@ public class DinoObstacleMovement : MonoBehaviour
         else if (currentMovement == MovementModes.TOWARDPLAYER){
             MoveDinoTowardPlayer();
         }
+        else if (currentMovement == MovementModes.CHASEPLAYER){
+            ChasePlayer();
+        }
     }
 
     void MoveDinoTowardPlayer(){
@@ -51,11 +54,11 @@ public class DinoObstacleMovement : MonoBehaviour
         );
         rb.MovePosition(forwardMotion);
     }
-    
+
     void MoveDinoHorizontal(){
         int moveLeftModifier;
 
-        //set a modifier based on which direction we need to go.
+        //set a modifier based on which direction we need to go. This will also determine which way we face as we move.
         if(iAmMovingLeft){
             moveLeftModifier = -1;
         }
@@ -68,7 +71,9 @@ public class DinoObstacleMovement : MonoBehaviour
             transform.position.y,
             transform.position.z 
         );
-        
+
+        Quaternion dinoRotation = Quaternion.Euler(0, 90 * moveLeftModifier, 0);
+        transform.rotation = dinoRotation;
         rb.MovePosition(forwardMotion);
         
         //check to see if we are going to start moving a different direction on the next frame.
@@ -78,6 +83,18 @@ public class DinoObstacleMovement : MonoBehaviour
         else if (transform.position.x >= xStart + xRightLimit){
             iAmMovingLeft = true;
         }
+    }
+
+    void ChasePlayer(){
+        Vector3 forwardMotion = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.z + (speed * Time.deltaTime)
+        );
+
+        Quaternion dinoRotation = Quaternion.Euler(0, 0, 0);
+        transform.rotation = dinoRotation;
+        rb.MovePosition(forwardMotion);
     }
 
     
