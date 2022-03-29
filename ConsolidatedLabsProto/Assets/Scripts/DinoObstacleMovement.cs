@@ -49,13 +49,15 @@ public class DinoObstacleMovement : MonoBehaviour
         }
     }
 
+    //A gag method to be used. It rotates the dinosaur on the Y Axis.
     void DinoDisco(){
         float yEulerAngle = (1 - (transform.rotation.y) * (Time.deltaTime * speed));
         Vector3 angle = new Vector3(transform.eulerAngles.x, yEulerAngle, transform.eulerAngles.z);
-        transform.eulerAngles += angle;
-        
+        transform.eulerAngles += angle;    
     }
 
+    //This method moves the dinosaur toward the front of the level.
+    //The rotation of the dinosaur is set to face toward the player.
     void MoveDinoTowardPlayer(){
         Quaternion dinoRotationTowardPlayer = Quaternion.Euler(0, -180,0);
         this.transform.rotation = dinoRotationTowardPlayer;
@@ -67,28 +69,31 @@ public class DinoObstacleMovement : MonoBehaviour
         rb.MovePosition(forwardMotion);
     }
 
+    //Move the dinosaur left and right. Also, rotate the dinosaur in the proper direction based on movement.
     void MoveDinoHorizontal(){
-        int moveLeftModifier;
+        int directionModifier;
 
         //set a modifier based on which direction we need to go. This will also determine which way we face as we move.
         if(iAmMovingLeft){
-            moveLeftModifier = -1;
+            directionModifier = -1;
         }
         else{
-            moveLeftModifier = 1;
+            directionModifier = 1;
         }
        
+       //The forward motion of the dino is dependant on the direction we are facing.a
         Vector3 forwardMotion = new Vector3(
-            transform.position.x + (speed * Time.deltaTime * moveLeftModifier),
+            transform.position.x + (speed * Time.deltaTime * directionModifier),
             transform.position.y,
             transform.position.z 
         );
 
-        Quaternion dinoRotation = Quaternion.Euler(0, 90 * moveLeftModifier, 0);
+        Quaternion dinoRotation = Quaternion.Euler(0, 90 * directionModifier, 0);
         transform.rotation = dinoRotation;
         rb.MovePosition(forwardMotion);
         
         //check to see if we are going to start moving a different direction on the next frame.
+        //change direction when we are or beyond the limit of the direction.
         if(transform.position.x <= xStart - xLeftLimit){
             iAmMovingLeft = false;
         }
@@ -97,6 +102,7 @@ public class DinoObstacleMovement : MonoBehaviour
         }
     }
 
+    //This method sets the dinosaur the face the same direction of the player, and move toward the back of the level, like the player.
     void ChasePlayer(){
         Vector3 forwardMotion = new Vector3(
             transform.position.x,

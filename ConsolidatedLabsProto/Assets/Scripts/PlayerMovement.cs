@@ -4,28 +4,32 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Range(20f, 1000f)]
-    [Min(20f)]
-    public float strafeRate = 20f;
-    public float xRotationThreshold = 10f;
-    [Min(1f)]
-    public float xRotationCorrectionRate = 1f;
-    [Min(10f)]
+    private const float LOWESTMOVEMENTRATE = 10f;
+    private const float UPPERSTRAFERATE = 100f;
+    [Header("Movement Rate Modifiers")]
+    [Range(LOWESTMOVEMENTRATE, UPPERSTRAFERATE)]
+    [Min(LOWESTMOVEMENTRATE)]
+    public float strafeRate = LOWESTMOVEMENTRATE;
+    [Min(LOWESTMOVEMENTRATE)]
     public float speed = 10f;
-    public LevelManager levelManager;
-    public Canvas gameOverCanvas;
-    public Rigidbody rb;
 
-    [SerializeField]
-    [Header("Debug Flags")]
-    private bool movePlayer = false;
     
+    [SerializeField]
+    private Canvas gameOverCanvas;
+    [SerializeField]
+    private Rigidbody rb;
+    
+    [Space(10f)]
+    [Header("Debug Flags")]
+    [SerializeField]
+    private bool movePlayer = false;
+
     void FixedUpdate()
     {
         //Basic movement code for moving left and right.
-        Vector3 strafeVector = this.transform.position + (Vector3.right * Time.deltaTime * strafeRate * Input.GetAxis("Horizontal"));
-        Vector3 forwardVector = this.transform.position + (Vector3.forward * speed * Time.deltaTime);
-        Vector3 vectorCombination = new Vector3(strafeVector.x, this.transform.position.y, forwardVector.z);
+        Vector3 strafeVector = transform.position + (Vector3.right * Time.deltaTime * strafeRate * Input.GetAxis("Horizontal"));
+        Vector3 forwardVector = transform.position + (Vector3.forward * speed * Time.deltaTime);
+        Vector3 vectorCombination = new Vector3(strafeVector.x, transform.position.y, forwardVector.z);
 
         if(movePlayer){
             rb.MovePosition(vectorCombination);
@@ -34,10 +38,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision collision){
-        if(levelManager is LevelManager &&
-            collision.gameObject.tag == "Obstacle"){
+        bool tagIsObstacle = collision.gameObject.tag == "Obstacle";
+        bool tagIsKillfield = collision.gameObject.tag == "killfield";
+        if(tagIsObstacle || tagIsKillfield){
             movePlayer = false;
             gameOverCanvas.gameObject.SetActive(true);
+            Destroy(this.gameObject);
         }
+
     }
 }
