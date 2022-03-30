@@ -34,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
         if(movePlayer){
             rb.MovePosition(vectorCombination);
         }
-
     }
 
     void OnCollisionEnter(Collision collision){

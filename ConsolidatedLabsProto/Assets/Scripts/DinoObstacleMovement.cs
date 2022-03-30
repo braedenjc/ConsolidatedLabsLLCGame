@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
     using UnityEditor;
+    using DebuggingTools;
 #endif
 
 [ExecuteAlways]
@@ -119,23 +118,12 @@ public class DinoObstacleMovement : MonoBehaviour
     #region Editor only functions
     #if UNITY_EDITOR
         void DrawLeftEndpointPath(){
-            DrawPathLine(this.transform.position, xLeftLimit, Color.red);
+            //PathTools.DrawPathLine(this.transform.position, xLeftLimit, Color.red);
+            
         }
 
         void DrawRightEndpointPath(){
-            DrawPathLine(this.transform.position, xRightLimit, Color.magenta);
-        }
-
-        void DrawPathLine(Vector3 from, float distanceFromCenter, Color color){
-            Vector3 endpoint = new Vector3
-            (
-                xStart  + distanceFromCenter, 
-                this.transform.position.y, 
-                this.transform.position.z
-            );
-            Gizmos.color = color;
-            Gizmos.DrawLine(this.transform.position, endpoint);
-
+            //PathTools.DrawPathLine(this.transform.position, xRightLimit, Color.magenta);
         }
 
         void OnDrawGizmosSelected(){
