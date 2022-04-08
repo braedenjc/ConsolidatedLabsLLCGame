@@ -2176,6 +2176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   strafeRate: 10
   speed: 30
+  rotationRate: 40
+  rotationLimit: 10
   gameOverCanvas: {fileID: 1235106451}
   rb: {fileID: 1558633642}
   movePlayer: 1
